@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<header>
+  <div class="topnav">
+  <a class="active" href="#home">Home</a>
+  <a href="#Database" href = "#map">Database</a>
+  <a href="#contact">Contact</a>
+  <input type="text" placeholder="Search..">
+  
+
+</div>
+  
+  
+  
+<a href="#home" id="w3-bar-item-w3-button"><b>Wireless Sensor Networks (WSN) for Monitoring Groundwater Levels in a Region Dependent on Central Pivot Irrigation</b> </a>
+  
+</header>
+<link rel="stylesheet" type="text/css" href="design.css">
+
+<h2 id = "Second"> HELPING THE FUTURE OF AMERICAN LANDS </h2>
+<main>
+  
+
+
+  <head>
+    
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-VH80iLjAZxHPf6DyONjmyB_3YZJdwbw"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 16,
+          center: {lat: 27.526164, lng: -97.879109}
+        });
+        var marker = new google.maps.Marker({
+          position: {lat: 27.526164, lng: -97.879109},
+          map: map
+        });
+        marker.addListener('click', function() {
+          $.ajax({
+            url: '/get_sensor_data',
+            type: 'GET',
+            success: function(data) {
+              // Display the data in a table
+              var table = '<table><tr><th>Temperature</th><th>Soil Moisture</th><th>Battery Level</th><th>Date & Time</th></tr>';
+              for (var i = 0; i < data.length; i++) {
+                table += '<tr><td>' + data[i][0] + '</td><td>' + data[i][1] + '</td><td>' + data[i][2] + '</td><td>' + data[i][3] + '</td></tr>';
+              }
+              table += '</table>';
+              $('#data').html(table);
+            }
+          });
+        });
+      }
+    </script>
+  </head>
+  <body onload="initMap()">
+    <div id="map" style="height: 500px; width: 100%"></div>
+    <div id="data"></div>
+  </body>
+</html>
+</main>
