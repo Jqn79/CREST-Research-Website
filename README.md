@@ -1,6 +1,6 @@
 ﻿# CREST-Research-Website
 
-Currently, we are NOT using the index.html file.  This file was made by us originally just to test integrating a local database into the our back end of the website and showing the data on the index html file.
+Currently, we are NOT using the "index.html" file and the "app.py".  This file was made by us originally just to test integrating a local database into the our back end of the website and showing the data on the index html file.
 
 Currently, we are using the Templates folder, and the index2.html file for our current website.  We are using the WebWithMap.py python file as our "back end" for our website.  We decided to use the framework known as "flask" to be the back end language for the website.  We chose this due to the fact that we are fairly familiar with python rather than javascript.  
 
