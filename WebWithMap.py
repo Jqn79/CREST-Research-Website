@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return render_template("index2.html")
+    return render_template("index2copy.html")
 
 @app.route("/get_sensor_data", methods=["GET"])
 def get_sensor_data():
