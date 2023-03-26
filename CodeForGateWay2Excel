@@ -1,0 +1,72 @@
+import re
+import pandas as pd
+import time 
+from digi.xbee.devices import XBeeDevice
+
+# Connect to the Xbee module via serial port
+xbee = XBeeDevice('COM3', 115200)
+xbee.open()
+
+# Create an empty dataframe to store the sensor data
+df = pd.DataFrame(columns=['Temperature', 'Soil Moisture', 'Battery Level', 'Date & Time'])
+
+while True:
+    data = xbee.read_data()
+    if data is not None:
+        temperature = data.data[45:58].decode()
+        soil_moisture = data.data[68:83].decode()
+        battery = data.data[90:97].decode()
+        date_time = time.strftime("%Y-%m-%d %H:%M:%S")
+        
+        # Extract the float values from the temperature string
+        match = re.search(r'\d+\.\d+', temperature)
+        if match:
+            temperature = float(match.group())
+        else:
+            temperature = float('NaN')
+        
+        # Extract the float values from the soil moisture string
+        match = re.search(r'\d+\.\d+', soil_moisture)
+        if match:
+            soil_moisture = float(match.group())
+        else:
+            soil_moisture = float('NaN')
+        
+        # Extract the int values from the battery string
+        match = re.search(r'\d+', battery)
+        if match:
+            battery = int(match.group())
+        else:
+            battery = float('NaN')
+        
+        # Store the sensor data in a dataframe
+        df = df.append({'Temperature': temperature,
+                        'Soil Moisture': soil_moisture,
+                        'Battery Level': battery,
+                        'Date & Time': date_time}, ignore_index=True)
+
+        # Print the soil moisture and temperature values
+        print("Temperature:", temperature)
+        print("Soil Moisture:", soil_moisture)
+        print("Battery Level:", battery)
+
+        # Add a condition to stop data collection
+        # Optionally, you can add a condition to stop the data collection and save the file
+        # if the desired number of readings has been reached
+        if df.shape[0] >= 10:
+            try:
+        # Read the existing Excel file
+                existing_df = pd.read_excel("sensor_data.xlsx")
+
+        # Append the new data to the existing dataframe
+                updated_df = existing_df.append(df, ignore_index=True)
+
+        # Write the updated dataframe back to the Excel file
+                updated_df.to_excel("sensor_data.xlsx", index=False)
+            except FileNotFoundError:
+        # If the file does not exist, create it
+                df.to_excel("sensor_data.xlsx", index=False)
+        
+            break
+
+xbee.close()
